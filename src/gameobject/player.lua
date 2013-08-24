@@ -8,37 +8,34 @@ The player class.
 
 ]]--
 
-local Player = Class{__includes = Gameobject}
+local Player = Class{__includes = Unit}
 
 function Player:init(x, y)
-	Gameobject.init(self, x, y, "dynamic")
+	Unit.init(self, x, y, "dynamic")
 
 	self.speed = 1000
-	self.towerTime = 0
-	self.towerCooldown = 0.2
+	self.towerCooldown = 0.5
 	self.towerDropRange = 20
 end
 
 function Player:update(dt)
-	Gameobject.update(self, dt)
-	if self.towerTime > 0 then
-		self.towerTime = self.towerTime - dt
-	end
+	Unit.update(self, dt)
 end
 
 function Player:draw()
 	love.graphics.setColor(100, 255, 0, 255)
-	Gameobject.draw(self)
+	Unit.draw(self)
 
 	local mx, my = gameCamera:mousepos()
 	local px, py = self:getPosition()
 	local angle = angleToPoint(mx, my, px, py)
+	love.graphics.setLineWidth(2)
 	drawAngledLine(px, py, self.towerDropRange, angle)
 end
 
 function Player:dropTower()
-	if self.towerTime <= 0 then
-		self.towerTime = self.towerCooldown
+	if self.cooldown <= 0 then
+		self.cooldown = self.towerCooldown
 
 		local mx, my = gameCamera:mousepos()
 		local px, py = self:getPosition()
@@ -47,6 +44,10 @@ function Player:dropTower()
 
 		Tower(x2, y2)
 	end
+end
+
+function Player:destroy()
+	Unit.destroy(self)
 end
 
 return Player

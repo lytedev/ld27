@@ -9,15 +9,17 @@ Sets the default configuration values for the LOVE2D framework and serves as a '
 ]]--
 
 -- Header Stuff
+require("lib.hump.vector")
 vector = require("lib.hump.vector")
 Class = require("lib.hump.class")
-Gameobject = require("src.gameobject.gameobject")
+Timer = require("lib.hump.timer")
 Camera = require("lib.hump.camera")
 Gamestate = require("lib.hump.gamestate")
+Gameobject = require("src.gameobject.gameobject")
+Unit = require("src.gameobject.unit")
 Player = require("src.gameobject.player")
 Enemy = require("src.gameobject.enemy")
 Tower = require("src.gameobject.tower")
-Timer = require("lib.hump.timer")
 
 player = {}
 gameCamera = {}
@@ -39,7 +41,6 @@ function addDebugText(x)
 end
 
 function drawDebugText()
-	love.graphics.setFont(pixelFont)
 	love.graphics.print(debugText, 5, 5)
 	debugText = ""
 end
@@ -58,6 +59,12 @@ end
 function drawAngledLine(x, y, length, angle)
 	local x1, y1, x2, y2 = angledLine(x, y, length, angle)
 	love.graphics.line(x1, y1, x2, y2)
+end
+
+function pointDistance(x1, y1, x2, y2)
+	local x = x1 - x2
+	local y = y1 - y2
+	return math.sqrt(x * x + y * y)
 end
 
 -- LOVE2D config

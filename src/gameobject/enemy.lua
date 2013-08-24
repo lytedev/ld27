@@ -8,20 +8,21 @@ The enemy class.
 
 ]]--
 
-local Enemy = Class{__includes = Gameobject}
+local Enemy = Class{__includes = Unit}
 
 function Enemy:init(x, y)
-	Gameobject.init(self, x, y, "dynamic")
+	Unit.init(self, x, y, "dynamic")
 
 	self.speed = 500
+	self.target = player
 
 	enemies[table.address(self)] = self
 end
 
 function Enemy:update(dt)
-	Gameobject.update(self, dt)
+	Unit.update(self, dt)
 
-	local px, py = player:getPosition()
+	local px, py = self.target:getPosition()
 	local x, y = self:getPosition()
 	local angle = angleToPoint(px, py, x, y)
 
@@ -32,7 +33,12 @@ end
 
 function Enemy:draw()
 	love.graphics.setColor(200, 20, 0, 255)
-	Gameobject.draw(self)
+	Unit.draw(self)
+end
+
+function Enemy:destroy()
+	Unit.destroy(self)
+	enemies[table.address(self)] = nil	
 end
 
 return Enemy

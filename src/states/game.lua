@@ -13,9 +13,8 @@ local Game = Gamestate.new()
 local pairs = pairs
 
 function Game:init()
-	print("Game init")
+	self.pixelFont = love.graphics.newFont("assets/fonts/pf_tempesta_seven_condensed.ttf", 8)
 
-	love.graphics.newFont("assets/fonts/pf_tempesta_seven_condensed.ttf", 8)
 	world = love.physics.newWorld(0, 0, true)
 	love.graphics.setBackgroundColor(17, 17, 17, 255)
 
@@ -29,6 +28,11 @@ function Game:init()
 end
 
 function Game:restart()
+	gameobjects = {}
+	towers = {}
+	enemies = {}
+	world = love.physics.newWorld(0, 0, true)
+
 	self.player = Player(0, 200)
 
 	player = self.player
@@ -57,6 +61,8 @@ function Game:update(dt)
 	if love.keyboard.isDown("r") then 
 		self:restart()
 	end
+	addDebugText(love.timer.getFPS())
+	addDebugText(self.player.cooldown)
 
 	self.timer:update(dt)
 	world:update(dt)
@@ -106,12 +112,18 @@ function Game:draw()
 		v:draw()
 	end
 
+	for k, v in pairs(towers) do
+		v:drawAttack()
+	end
+
 	love.graphics.setColor(255, 0, 0, 255)
 	-- love.graphics.rectangle('line', -25, -25, 50, 50)
 
 	self.camera:detach()
 
-	-- Draw Interface
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setFont(self.pixelFont)
+	drawDebugText()
 end
 
 return Game
