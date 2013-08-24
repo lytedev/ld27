@@ -8,8 +8,19 @@ Game entry point.
 
 ]]--
 
-require("src.utils")
+require("conf")
+
+local Game = require("src.states.game")
 
 function love.load()
 	Gamestate.registerEvents()
+	Gamestate.switch(Game)
+end
+
+function love.update(dt)
+
+end
+
+function love.draw()
+	
 end

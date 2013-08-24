@@ -4,10 +4,63 @@ File: 		conf.lua
 Author: 	Daniel "lytedev" Flanagan
 Website:	http://dmf.me
 
-Sets the default configuration values for the LOVE2D framework.
+Sets the default configuration values for the LOVE2D framework and serves as a 'header'-type include file.
 
 ]]--
 
+-- Header Stuff
+vector = require("lib.hump.vector")
+Class = require("lib.hump.class")
+Gameobject = require("src.gameobject.gameobject")
+Camera = require("lib.hump.camera")
+Gamestate = require("lib.hump.gamestate")
+Player = require("src.gameobject.player")
+Enemy = require("src.gameobject.enemy")
+Tower = require("src.gameobject.tower")
+Timer = require("lib.hump.timer")
+
+player = {}
+gameCamera = {}
+gameobjects = {}
+towers = {}
+enemies = {}
+pixelsPerMeter = 32
+gravity = 0 -- 9.8 * pixelsPerMeter
+world = {}
+debugText = ""
+
+-- Utilities
+function table.address(t)
+	return tostring(t):sub(8)
+end
+
+function addDebugText(x)
+	debugText = debugText .. x .. "\n"
+end
+
+function drawDebugText()
+	love.graphics.setFont(pixelFont)
+	love.graphics.print(debugText, 5, 5)
+	debugText = ""
+end
+
+function angleToPoint(x1, y1, x2, y2)
+	return math.atan2(y1 - y2, x1 - x2)
+end
+
+function angledLine(x, y, length, angle)
+	local angleVector = vector(length, 0)
+	angleVector:rotate_inplace(angle)
+	angleVector = angleVector + vector(x, y)
+	return x, y, angleVector.x, angleVector.y
+end
+
+function drawAngledLine(x, y, length, angle)
+	local x1, y1, x2, y2 = angledLine(x, y, length, angle)
+	love.graphics.line(x1, y1, x2, y2)
+end
+
+-- LOVE2D config
 function love.conf(t)
 	-- Set config global
 	config = t
@@ -43,7 +96,8 @@ function love.conf(t)
 	t.modules.timer = true
 	t.modules.mouse = true
 	t.modules.sound = true
-	t.modules.physics = false
+	t.modules.physics = true
 
 	return t
 end
+
